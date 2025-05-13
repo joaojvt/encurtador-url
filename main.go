@@ -118,7 +118,7 @@ func shortenURL(w http.ResponseWriter, r *http.Request) {
 
 	baseUrl := "http://localhost:8080"
 	if envType == "prod" {
-		baseUrl = r.Header.Get("host")
+		baseUrl = "https://joao.kadu.tec.br"
 	}
 
 	shortUrl := fmt.Sprintf("%s/%s", baseUrl, shortId)
