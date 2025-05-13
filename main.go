@@ -9,6 +9,7 @@ import (
 	"log"
 	"math/big"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 )
@@ -18,6 +19,7 @@ var (
 	mu         sync.Mutex
 	secretKey  = []byte("secretaeskey12345678901234567890")
 	letterRune = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXY1234567890")
+	envType    = os.Getenv("ENV_TYPE")
 )
 
 func encrypt(originalURL string) string {
@@ -114,7 +116,12 @@ func shortenURL(w http.ResponseWriter, r *http.Request) {
 	urlStore[shortId] = encryptedURl
 	mu.Unlock()
 
-	shortUrl := fmt.Sprintf("http://localhost:8080/%s", shortId)
+	baseUrl := "http://localhost:8080"
+	if envType == "prod" {
+		baseUrl = r.Header.Get("host")
+	}
+
+	shortUrl := fmt.Sprintf("%s/%s", baseUrl, shortId)
 	fmt.Fprintln(w, "A URL encurtada desta url original  é: %s", shortUrl)
 }
 
